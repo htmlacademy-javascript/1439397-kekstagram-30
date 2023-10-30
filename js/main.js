@@ -1,9 +1,13 @@
-const message = `Всё отлично!
-  В целом всё неплохо. Но не всё.
-  Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.
-  Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.
-  Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.
-  Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!`;
+const MESSAGES = [
+  'Всё отлично!',
+  'В целом всё неплохо. Но не всё.',
+  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра.',
+  'В конце концов это просто непрофессионально.',
+  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+  'Лица у людей на фотке перекошены, как будто их избивают.',
+  'Как можно было поймать такой неудачный момент?!'
+]
 
 const PHOTO_DESCRIPTION_LIST = [
   'Котенок забавно спит на спине.',
@@ -25,19 +29,7 @@ const PHOTO_DESCRIPTION_LIST = [
 
 const NAMES = ['София', 'Полина', 'Михаил', 'Арина', 'Марсель', 'Алиса', 'Ева', 'Лидия', 'Фёдор', 'Константин', 'Марк', 'Анна', 'Ярослав', 'Артём', 'Маргарита', 'Даниил', 'Таисия', 'Антон', 'Мадина', 'Кристина', 'Лев', 'Мирослав', 'Эмилия', 'Елизавета', 'Софья'];
 
-//Приведение строки с сообщениями к массиву
-const draftMessageArray = message.replaceAll('\n', '').replaceAll('  ', ' ').split('!').join('.').split('. ');
-const middleMessageArrayElements = draftMessageArray.slice(1, draftMessageArray.length - 1).map((item) => `${item}.`);
-const firstMessageArrayElement = `${draftMessageArray[0]}!`;
-const lastMessageArrayElement = `${draftMessageArray[draftMessageArray.length - 1].replace('.', '!')}`;
-const messageArray = [firstMessageArrayElement, ...middleMessageArrayElements, lastMessageArrayElement];
-
-const photoDescriptionId = makeIdCounter();
-const urlPhotoId = makeIdCounter();
-
-const photoDescriptionCollection = Array.from({ length: 25 }, createPhotoDescription);
-
-function makeIdCounter() {
+const makeIdCounter = () => {
   let count = 1;
 
   return function () {
@@ -45,18 +37,53 @@ function makeIdCounter() {
   };
 }
 
-function getRandomInteger(a, b) {
+const getRandomInteger = (a, b) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
   const result = Math.random() * (upper - lower + 1) + lower;
   return Math.floor(result);
 }
 
-function getRandomArrayElement(elements) {
+const getRandomArrayElement = (elements) => {
   return elements[getRandomInteger(0, elements.length - 1)];
 }
 
-function createPhotoDescription() {
+const createRandomNumberFromRange = (min, max) => {
+  const previousValues = [];
+
+  if (previousValues.length >= (max - min + 1)) {
+    console.error(`Перебраны все числа из диапазона от ${min} до ${max}`)
+    return null;
+  }
+
+  return () => {
+    let currentValue = getRandomInteger(min, max);
+
+    while (previousValues.includes(currentValue)) {
+      currentValue = getRandomInteger(min, max);
+    }
+    previousValues.push(currentValue);
+    return currentValue;
+  }
+}
+
+const createComment = () => {
+  return {
+    id: getRandomInteger(1, Number.MAX_SAFE_INTEGER),
+    avatar: `img/avatar-${getRandomInteger(1, 6)}.svg`,
+    message: createMessage(),
+    name: getRandomArrayElement(NAMES)
+  };
+}
+
+const createMessage = () => {
+  const messageCount = getRandomInteger(1, 2);
+  const uniqueMessageArrayIndex = createRandomNumberFromRange(0, 7)
+  const result = Array.from({ length: messageCount }, () => MESSAGES[uniqueMessageArrayIndex()]).join(' ');
+  return result;
+}
+
+const createPhotoDescription = () => {
   return {
     id: photoDescriptionId(),
     url: `photos/${urlPhotoId()}.jpg`,
@@ -66,18 +93,9 @@ function createPhotoDescription() {
   };
 }
 
-function createComment() {
-  return {
-    id: getRandomInteger(1, Number.MAX_SAFE_INTEGER),
-    avatar: `img/avatar-${getRandomInteger(1, 6)}.svg`,
-    message: creatMessage(),
-    name: getRandomArrayElement(NAMES)
-  };
-}
+const photoDescriptionId = makeIdCounter();
+const urlPhotoId = makeIdCounter();
 
-function creatMessage() {
-  return Math.random() > 0.5 ? messageArray[getRandomInteger(0, messageArray.length - 1)] : `${messageArray[getRandomInteger(0, messageArray.length - 1)]} ${messageArray[getRandomInteger(0, messageArray.length - 1)]}`;
-}
+const photoDescriptionCollection = Array.from({ length: 25 }, createPhotoDescription);
 
-
-photoDescriptionCollection();
+console.log(photoDescriptionCollection);
