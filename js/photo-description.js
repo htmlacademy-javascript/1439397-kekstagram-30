@@ -1,8 +1,7 @@
 import { MESSAGES, PHOTO_DESCRIPTION_LIST, NAMES } from './data.js';
 import { getRandomInteger, getRandomArrayElement, createRandomNumberFromRange, makeIdCounter } from './utils.js';
 
-const photoDescriptionId = makeIdCounter();
-const urlPhotoId = makeIdCounter();
+const photoID = makeIdCounter();
 
 const createMessage = () => {
   const messageCount = getRandomInteger(1, 2);
@@ -18,13 +17,16 @@ const createComment = () => ({
   name: getRandomArrayElement(NAMES)
 });
 
-const createPhotoDescription = () => ({
-  id: photoDescriptionId(),
-  url: `photos/${urlPhotoId()}.jpg`,
-  description: getRandomArrayElement(PHOTO_DESCRIPTION_LIST),
-  likes: getRandomInteger(15, 200),
-  comments: Array.from({ length: getRandomInteger(0, 30) }, createComment)
-});
+const createPhotoDescription = () => {
+  const id = photoID();
+  return {
+    id: id,
+    url: `photos/${id}.jpg`,
+    description: getRandomArrayElement(PHOTO_DESCRIPTION_LIST),
+    likes: getRandomInteger(15, 200),
+    comments: Array.from({ length: getRandomInteger(0, 30) }, createComment)
+  };
+};
 
 const photoDescriptionCollection = () => Array.from({ length: 25 }, createPhotoDescription);
 
