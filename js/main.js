@@ -1,3 +1,5 @@
 import { photoDescriptionCollection } from './photo-description.js';
+import { renderThumbnails } from './thumbnails.js';
 
-photoDescriptionCollection();
+const photos = photoDescriptionCollection();
+renderThumbnails(photos);
