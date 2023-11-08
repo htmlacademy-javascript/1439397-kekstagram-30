@@ -1,3 +1,7 @@
+import { photoDescriptionCollection } from './photo-description.js';
+
+
+const pictures = photoDescriptionCollection();
 const thumbnailTemplate = document.querySelector('#picture')
   .content
   .querySelector('.picture');
@@ -14,10 +18,10 @@ const createThumbnail = ({ url, description, likes, comments }) => {
   return thumbnail;
 };
 
-const renderThumbnails = (pictures) => {
+const renderThumbnails = (picturesArray) => {
   const thumbnailFragment = document.createDocumentFragment();
 
-  pictures.forEach((picture) => {
+  picturesArray.forEach((picture) => {
     const thumbnail = createThumbnail(picture);
     thumbnailFragment.append(thumbnail);
   });
@@ -25,4 +29,7 @@ const renderThumbnails = (pictures) => {
   container.append(thumbnailFragment);
 };
 
-export { renderThumbnails, container };
+
+renderThumbnails(pictures);
+
+export { renderThumbnails, container, pictures };
