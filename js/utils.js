@@ -33,4 +33,6 @@ const makeIdCounter = () => {
   };
 };
 
-export { getRandomInteger, getRandomArrayElement, createRandomNumberFromRange, makeIdCounter };
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+export { getRandomInteger, getRandomArrayElement, createRandomNumberFromRange, makeIdCounter, isEscapeKey };
