@@ -1,5 +1,6 @@
 import { pictures, container } from './thumbnails.js';
 import { isEscapeKey } from './utils.js';
+import { bodyElement } from './upload-form.js'
 
 const pictureModalElement = document.querySelector('.big-picture');
 const bigPictureElement = pictureModalElement.querySelector('.big-picture__img img');
@@ -70,7 +71,7 @@ const renderBigPicture = ({ url, likes, description, comments }) => {
 
 const openPictureModalElement = (evt) => {
   pictureModalElement.classList.remove('hidden');
-  document.body.classList.add('modal-open');
+  bodyElement.classList.add('modal-open');
 
   document.addEventListener('keydown', onDocumentKeydown);
 
@@ -89,9 +90,7 @@ const openPictureModalElement = (evt) => {
 
 const closeBigPicture = () => {
   pictureModalElement.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-
-  document.removeEventListener('keydown', onDocumentKeydown);
+  bodyElement.classList.remove('modal-open');
 };
 
 function onDocumentKeydown(evt) {
@@ -107,6 +106,4 @@ container.addEventListener('click', (evt) => {
   }
 });
 
-closeBigPictureButton.addEventListener('click', () => {
-  closeBigPicture();
-});
+closeBigPictureButton.addEventListener('click', closeBigPicture);
