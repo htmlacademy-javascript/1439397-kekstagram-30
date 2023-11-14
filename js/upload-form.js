@@ -2,12 +2,11 @@ import { isEscapeKey } from "./utils.js";
 
 const uploadPictureControl = document.querySelector('.img-upload__input');
 const editPictureForm = document.querySelector('.img-upload__overlay');
-const bodyElement = document.body;
 const closeEditPictureFormButton = document.querySelector('.img-upload__cancel');
 const pictureScaleControl = document.querySelector('.scale__control--value');
 const pictureScaleSmallerControl = document.querySelector('.scale__control--smaller');
 const pictureScaleBiggerControl = document.querySelector('.scale__control--bigger');
-const uploadPicturePreview = document.querySelector('.img-upload__preview');
+const uploadPicturePreview = document.querySelector('.img-upload__preview img');
 const sliderContainer = document.querySelector('.img-upload__effect-level');
 const effectLevelValue = document.querySelector('.effect-level__value');
 const effectsList = document.querySelector('.effects__list');
@@ -43,15 +42,7 @@ pictureScaleSmallerControl.addEventListener('click', decreaseScaleValue);
 const EFFECTS = [
   {
     name: "effect-none",
-    options: {
-      range: {
-        min: 0,
-        max: 1,
-      },
-      start: 1,
-      step: 0.1,
-    },
-    filter() { uploadPicturePreview.style.filter = "none" },
+    filterName: 'none',
   },
   {
     name: "effect-chrome",
@@ -63,7 +54,7 @@ const EFFECTS = [
       start: 1,
       step: 0.1,
     },
-    filter() { uploadPicturePreview.style.filter = "grayscale(1)" },
+    filterName: 'grayscale',
   },
   {
     name: "effect-sepia",
@@ -75,7 +66,7 @@ const EFFECTS = [
       start: 1,
       step: 0.1,
     },
-    filter() { uploadPicturePreview.style.filter = "sepia(1)" },
+    filterName: 'sepia',
   },
   {
     name: "effect-marvin",
@@ -86,13 +77,9 @@ const EFFECTS = [
       },
       start: 100,
       step: 1,
-      pips: {
-        format: {
-          postfix: '%'
-        }
-      }
     },
-    filter() { uploadPicturePreview.style.filter = "invert(100)" },
+    postfix: '%',
+    filterName: 'invert',
   },
   {
     name: "effect-phobos",
@@ -103,13 +90,9 @@ const EFFECTS = [
       },
       start: 3,
       step: 0.1,
-      pips: {
-        format: {
-          postfix: 'px'
-        }
-      }
     },
-    filter() { uploadPicturePreview.style.filter = "blur(3)" },
+    postfix: 'px',
+    filterName: 'blur',
   },
   {
     name: "effect-heat",
@@ -121,16 +104,9 @@ const EFFECTS = [
       start: 3,
       step: 0.1,
     },
-    filter() { uploadPicturePreview.style.filter = "brightness(3)" },
+    filterName: 'brightness',
   },
 ]
-
-effectsList.addEventListener('change', (evt) => {
-  const effect = EFFECTS.find(item => item.name === evt.target.id);
-  effect.filter();
-})
-
-effectLevelValue.value = 100;
 
 noUiSlider.create(sliderContainer, {
   range: {
@@ -142,33 +118,35 @@ noUiSlider.create(sliderContainer, {
   connect: 'lower',
 })
 
-sliderContainer.noUiSlider.on('update', () => {
-  uploadPicturePreview.style.filter = `grayscale(1)`;
-});
+const createFilter = (obj) => {
+  const filterName = obj.filterName;
+  let postfix = obj?.postfix;
+  postfix === undefined ? postfix = '' : postfix;
 
+  sliderContainer.noUiSlider.on('update', () => {
+    effectLevelValue.setAttribute('value', sliderContainer.noUiSlider.get());
+    uploadPicturePreview.style.filter = `${filterName}(${sliderContainer.noUiSlider.get()}${postfix})`;
+  });
+}
 
+effectsList.addEventListener('change', (evt) => {
+  const effect = EFFECTS.find(item => item.name === evt.target.id);
+  if (effect.filterName !== 'none') {
+    sliderContainer.classList.remove('hidden');
+    sliderContainer.noUiSlider.updateOptions(effect.options);
+    createFilter(effect);
+  } else {
+    uploadPicturePreview.style.filter = null;
+    effectLevelValue.setAttribute('value', '');
+    sliderContainer.classList.add('hidden');
+  }
+})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//Открытие модалки
 uploadPictureControl.addEventListener('change', () => {
   editPictureForm.classList.remove('hidden');
-  bodyElement.classList.add('moda-open');
+  sliderContainer.classList.add('hidden');
+  document.body.classList.add('modal-open');
 
   document.addEventListener('keydown', onDocumentKeydown);
 })
@@ -185,9 +163,9 @@ const closeEditPictureForm = () => {
   document.body.classList.remove('modal-open');
 
   uploadPictureControl.value = '';
+  uploadPicturePreview.removeAttribute('style');
+  pictureScaleControl.setAttribute('value', '100%');
 };
 
 closeEditPictureFormButton.addEventListener('click', closeEditPictureForm)
 
-
-export { bodyElement }
