@@ -1,4 +1,4 @@
-import { isEscapeKey } from "./utils.js";
+import { isEscapeKey } from './utils.js';
 
 const uploadPictureControl = document.querySelector('.img-upload__input');
 const editPictureForm = document.querySelector('.img-upload__overlay');
@@ -14,26 +14,30 @@ const effectsList = document.querySelector('.effects__list');
 
 //Изменение масштаба
 const getCurrentPictureScaleValue = () => {
-  let pictureScaleValue = parseInt(pictureScaleControl.getAttribute('value'), 10);
+  const pictureScaleValue = parseInt(pictureScaleControl.getAttribute('value'), 10);
   return pictureScaleValue;
-}
-
-const increaseScaleValue = () => {
-  const newScalePictureValue = getCurrentPictureScaleValue() + 25;
-  if (newScalePictureValue > 100) return;
-  pictureScaleControl.setAttribute('value', `${newScalePictureValue}%`);
-  applyPictureScaleValue(newScalePictureValue);
-}
-const decreaseScaleValue = () => {
-  const newScalePictureValue = getCurrentPictureScaleValue() - 25;
-  if (newScalePictureValue < 25) return;
-  pictureScaleControl.setAttribute('value', `${newScalePictureValue}%`);
-  applyPictureScaleValue(newScalePictureValue);
-}
+};
 
 const applyPictureScaleValue = (value) => {
   uploadPicturePreview.style.transform = `scale(${value / 100})`;
-}
+};
+
+const increaseScaleValue = () => {
+  const newScalePictureValue = getCurrentPictureScaleValue() + 25;
+  if (newScalePictureValue > 100) {
+    return;
+  }
+  pictureScaleControl.setAttribute('value', `${newScalePictureValue}%`);
+  applyPictureScaleValue(newScalePictureValue);
+};
+const decreaseScaleValue = () => {
+  const newScalePictureValue = getCurrentPictureScaleValue() - 25;
+  if (newScalePictureValue < 25) {
+    return;
+  }
+  pictureScaleControl.setAttribute('value', `${newScalePictureValue}%`);
+  applyPictureScaleValue(newScalePictureValue);
+};
 
 pictureScaleBiggerControl.addEventListener('click', increaseScaleValue);
 pictureScaleSmallerControl.addEventListener('click', decreaseScaleValue);
@@ -41,11 +45,11 @@ pictureScaleSmallerControl.addEventListener('click', decreaseScaleValue);
 // Фильтры
 const EFFECTS = [
   {
-    name: "effect-none",
+    name: 'effect-none',
     filterName: 'none',
   },
   {
-    name: "effect-chrome",
+    name: 'effect-chrome',
     options: {
       range: {
         min: 0,
@@ -57,7 +61,7 @@ const EFFECTS = [
     filterName: 'grayscale',
   },
   {
-    name: "effect-sepia",
+    name: 'effect-sepia',
     options: {
       range: {
         min: 0,
@@ -69,7 +73,7 @@ const EFFECTS = [
     filterName: 'sepia',
   },
   {
-    name: "effect-marvin",
+    name: 'effect-marvin',
     options: {
       range: {
         min: 0,
@@ -82,7 +86,7 @@ const EFFECTS = [
     filterName: 'invert',
   },
   {
-    name: "effect-phobos",
+    name: 'effect-phobos',
     options: {
       range: {
         min: 0,
@@ -95,7 +99,7 @@ const EFFECTS = [
     filterName: 'blur',
   },
   {
-    name: "effect-heat",
+    name: 'effect-heat',
     options: {
       range: {
         min: 0,
@@ -106,7 +110,7 @@ const EFFECTS = [
     },
     filterName: 'brightness',
   },
-]
+];
 
 noUiSlider.create(sliderContainer, {
   range: {
@@ -116,31 +120,33 @@ noUiSlider.create(sliderContainer, {
   start: 1,
   step: 0.1,
   connect: 'lower',
-})
+});
 
-const createFilter = (obj) => {
+const createEffect = (obj) => {
   const filterName = obj.filterName;
   let postfix = obj?.postfix;
-  postfix === undefined ? postfix = '' : postfix;
+  if (postfix === undefined) {
+    postfix = '';
+  }
 
   sliderContainer.noUiSlider.on('update', () => {
     effectLevelValue.setAttribute('value', sliderContainer.noUiSlider.get());
     uploadPicturePreview.style.filter = `${filterName}(${sliderContainer.noUiSlider.get()}${postfix})`;
   });
-}
+};
 
 effectsList.addEventListener('change', (evt) => {
-  const effect = EFFECTS.find(item => item.name === evt.target.id);
-  if (effect.filterName !== 'none') {
+  const effectItem = EFFECTS.find((item) => item.name === evt.target.id);
+  if (effectItem.filterName !== 'none') {
     sliderContainer.classList.remove('hidden');
-    sliderContainer.noUiSlider.updateOptions(effect.options);
-    createFilter(effect);
+    sliderContainer.noUiSlider.updateOptions(effectItem.options);
+    createEffect(effectItem);
   } else {
     uploadPicturePreview.style.filter = null;
     effectLevelValue.setAttribute('value', '');
     sliderContainer.classList.add('hidden');
   }
-})
+});
 
 //Открытие модалки
 uploadPictureControl.addEventListener('change', () => {
@@ -149,14 +155,7 @@ uploadPictureControl.addEventListener('change', () => {
   document.body.classList.add('modal-open');
 
   document.addEventListener('keydown', onDocumentKeydown);
-})
-
-function onDocumentKeydown(evt) {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    closeEditPictureForm();
-  }
-}
+});
 
 const closeEditPictureForm = () => {
   editPictureForm.classList.add('hidden');
@@ -167,5 +166,12 @@ const closeEditPictureForm = () => {
   pictureScaleControl.setAttribute('value', '100%');
 };
 
-closeEditPictureFormButton.addEventListener('click', closeEditPictureForm)
+function onDocumentKeydown(evt) {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    closeEditPictureForm();
+  }
+}
+
+closeEditPictureFormButton.addEventListener('click', closeEditPictureForm);
 
