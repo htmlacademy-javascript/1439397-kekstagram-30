@@ -2,15 +2,15 @@ import { isEscapeKey } from './utils.js';
 
 const uploadPictureControl = document.querySelector('.img-upload__input');
 const editPictureForm = document.querySelector('.img-upload__overlay');
-const closeEditPictureFormButton = document.querySelector('.img-upload__cancel');
-const pictureScaleControl = document.querySelector('.scale__control--value');
-const pictureScaleSmallerControl = document.querySelector('.scale__control--smaller');
-const pictureScaleBiggerControl = document.querySelector('.scale__control--bigger');
-const uploadPicturePreview = document.querySelector('.img-upload__preview img');
-const sliderElement = document.querySelector('.effect-level__slider');
-const sliderContainer = document.querySelector('.img-upload__effect-level');
-const effectLevelValue = document.querySelector('.effect-level__value');
-const effectsList = document.querySelector('.effects__list');
+const closeEditPictureFormButton = editPictureForm.querySelector('.img-upload__cancel');
+const pictureScaleControl = editPictureForm.querySelector('.scale__control--value');
+const pictureScaleSmallerControl = editPictureForm.querySelector('.scale__control--smaller');
+const pictureScaleBiggerControl = editPictureForm.querySelector('.scale__control--bigger');
+const uploadPicturePreview = editPictureForm.querySelector('.img-upload__preview img');
+const sliderElement = editPictureForm.querySelector('.effect-level__slider');
+const sliderContainer = editPictureForm.querySelector('.img-upload__effect-level');
+const effectLevelValue = editPictureForm.querySelector('.effect-level__value');
+const effectsList = editPictureForm.querySelector('.effects__list');
 
 let scale = 100;
 
