@@ -90,8 +90,6 @@ const openPictureModalElement = (evt) => {
 const closeBigPicture = () => {
   pictureModalElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
-
-  document.removeEventListener('keydown', onDocumentKeydown);
 };
 
 function onDocumentKeydown(evt) {
@@ -107,6 +105,4 @@ container.addEventListener('click', (evt) => {
   }
 });
 
-closeBigPictureButton.addEventListener('click', () => {
-  closeBigPicture();
-});
+closeBigPictureButton.addEventListener('click', closeBigPicture);
