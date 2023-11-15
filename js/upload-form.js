@@ -7,36 +7,34 @@ const pictureScaleControl = document.querySelector('.scale__control--value');
 const pictureScaleSmallerControl = document.querySelector('.scale__control--smaller');
 const pictureScaleBiggerControl = document.querySelector('.scale__control--bigger');
 const uploadPicturePreview = document.querySelector('.img-upload__preview img');
+const sliderElement = document.querySelector('.effect-level__slider');
 const sliderContainer = document.querySelector('.img-upload__effect-level');
 const effectLevelValue = document.querySelector('.effect-level__value');
 const effectsList = document.querySelector('.effects__list');
 
-
-//Изменение масштаба
-const getCurrentPictureScaleValue = () => {
-  const pictureScaleValue = parseInt(pictureScaleControl.getAttribute('value'), 10);
-  return pictureScaleValue;
-};
+let scale = 100;
 
 const applyPictureScaleValue = (value) => {
   uploadPicturePreview.style.transform = `scale(${value / 100})`;
 };
 
 const increaseScaleValue = () => {
-  const newScalePictureValue = getCurrentPictureScaleValue() + 25;
-  if (newScalePictureValue > 100) {
+  if (scale >= 100) {
     return;
+  } else {
+    scale += 25;
   }
-  pictureScaleControl.setAttribute('value', `${newScalePictureValue}%`);
-  applyPictureScaleValue(newScalePictureValue);
+  pictureScaleControl.setAttribute('value', `${scale}%`);
+  applyPictureScaleValue(scale);
 };
 const decreaseScaleValue = () => {
-  const newScalePictureValue = getCurrentPictureScaleValue() - 25;
-  if (newScalePictureValue < 25) {
+  if (scale <= 25) {
     return;
+  } else {
+    scale -= 25;
   }
-  pictureScaleControl.setAttribute('value', `${newScalePictureValue}%`);
-  applyPictureScaleValue(newScalePictureValue);
+  pictureScaleControl.setAttribute('value', `${scale}%`);
+  applyPictureScaleValue(scale);
 };
 
 pictureScaleBiggerControl.addEventListener('click', increaseScaleValue);
@@ -112,7 +110,7 @@ const EFFECTS = [
   },
 ];
 
-noUiSlider.create(sliderContainer, {
+noUiSlider.create(sliderElement, {
   range: {
     min: 0,
     max: 1,
@@ -129,9 +127,9 @@ const createEffect = (obj) => {
     postfix = '';
   }
 
-  sliderContainer.noUiSlider.on('update', () => {
-    effectLevelValue.setAttribute('value', sliderContainer.noUiSlider.get());
-    uploadPicturePreview.style.filter = `${filterName}(${sliderContainer.noUiSlider.get()}${postfix})`;
+  sliderElement.noUiSlider.on('update', () => {
+    effectLevelValue.setAttribute('value', sliderElement.noUiSlider.get());
+    uploadPicturePreview.style.filter = `${filterName}(${sliderElement.noUiSlider.get()}${postfix})`;
   });
 };
 
@@ -139,7 +137,7 @@ effectsList.addEventListener('change', (evt) => {
   const effectItem = EFFECTS.find((item) => item.name === evt.target.id);
   if (effectItem.filterName !== 'none') {
     sliderContainer.classList.remove('hidden');
-    sliderContainer.noUiSlider.updateOptions(effectItem.options);
+    sliderElement.noUiSlider.updateOptions(effectItem.options);
     createEffect(effectItem);
   } else {
     uploadPicturePreview.style.filter = null;
@@ -155,6 +153,7 @@ uploadPictureControl.addEventListener('change', () => {
   document.body.classList.add('modal-open');
 
   document.addEventListener('keydown', onDocumentKeydown);
+  scale = 100;
 });
 
 const closeEditPictureForm = () => {

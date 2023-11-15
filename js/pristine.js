@@ -1,13 +1,19 @@
+import { isEscapeKey } from './utils.js';
+
 const uploadFormElement = document.querySelector('.img-upload__form');
 const hashtagInputElement = document.querySelector('.text__hashtags');
 const commentInputElement = document.querySelector('.text__description');
 
 hashtagInputElement.addEventListener('keydown', (evt) => {
-  evt.stopPropagation();
+  if (isEscapeKey) {
+    evt.stopPropagation();
+  }
 });
 
 commentInputElement.addEventListener('keydown', (evt) => {
-  evt.stopPropagation();
+  if (isEscapeKey) {
+    evt.stopPropagation();
+  }
 });
 
 const pristine = new Pristine(uploadFormElement);
@@ -41,13 +47,7 @@ const validateHashtag = (value) => {
   }
 };
 
-const validateComment = (value) => {
-  if (value) {
-    return value.length <= 140;
-  } else {
-    return true;
-  }
-};
+const validateComment = (value) => value.length <= 140;
 
 pristine.addValidator(hashtagInputElement, validateHashtag);
 pristine.addValidator(commentInputElement, validateComment);
