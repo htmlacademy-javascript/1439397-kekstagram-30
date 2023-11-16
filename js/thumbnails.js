@@ -1,7 +1,3 @@
-import { photoDescriptionCollection } from './photo-description.js';
-
-
-const pictures = photoDescriptionCollection();
 const thumbnailTemplate = document.querySelector('#picture')
   .content
   .querySelector('.picture');
@@ -31,6 +27,4 @@ const renderThumbnails = (picturesArray) => {
 };
 
 
-renderThumbnails(pictures);
-
-export { renderThumbnails, container, pictures };
+export { renderThumbnails, container };

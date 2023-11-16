@@ -35,4 +35,17 @@ const makeIdCounter = () => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export { getRandomInteger, getRandomArrayElement, createRandomNumberFromRange, makeIdCounter, isEscapeKey };
+// ошибка при загрузке данных миниаютюр
+const dataErrorTemplate = document.querySelector('#data-error')
+  .content
+  .querySelector('.data-error');
+
+const showError = () => {
+  document.body.append(dataErrorTemplate);
+
+  setTimeout(() => {
+    dataErrorTemplate.remove()
+  }, 5000);
+}
+
+export { getRandomInteger, getRandomArrayElement, createRandomNumberFromRange, makeIdCounter, isEscapeKey, showError };

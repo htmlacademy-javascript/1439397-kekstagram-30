@@ -1,5 +1,6 @@
-import { pictures, container } from './thumbnails.js';
+import { container } from './thumbnails.js'; //тут еще пикчерс импортилось
 import { isEscapeKey } from './utils.js';
+import { pictures } from './fetch.js';
 
 const pictureModalElement = document.querySelector('.big-picture');
 const bigPictureElement = pictureModalElement.querySelector('.big-picture__img img');
@@ -106,3 +107,5 @@ container.addEventListener('click', (evt) => {
 });
 
 closeBigPictureButton.addEventListener('click', closeBigPicture);
+
+
