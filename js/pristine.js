@@ -44,7 +44,6 @@ const setUserFormSubmit = (onSuccess) => {
   });
 };
 
-
 const VALIDATE_ERRORS_MESSAGES = {
   NOT_VALID_HASHTAG: 'Введён невалидный хэш-тег',
   REPEATED_HASHTAG: 'Хэш-теги повторяются',
@@ -52,41 +51,33 @@ const VALIDATE_ERRORS_MESSAGES = {
   COMMENT_LENGTH_EXCEEDED: 'Длина комментария больше 140 символов',
 };
 
-const normalizeHashtagValue = () => {
-  let value = hashtagInputElement.value;
+const normalizeHashtagValue = (value) => {
+  value = hashtagInputElement.value;
   value = value.toLowerCase().replace(/\s+/g, ' ').trim();
-  return value;
+  const hashtagsArray = value.split(' ');
+  return hashtagsArray;
 };
-
-const hasDuplicates = (array) => (new Set(array)).size !== array.length;
 
 const validateHashtagByValue = (value) => {
   if (value) {
-    value = normalizeHashtagValue();
-    const hashtagsArray = value.split(' ');
+    const hashtagsArray = normalizeHashtagValue(value);
     const hashtagExp = /^#[a-zа-яё0-9]{1,19}$/i;
-    for (const hashtag of hashtagsArray) {
-      if (!hashtagExp.test(hashtag)) {
-        return false;
-      }
-    }
+    return hashtagsArray.every((hashtag) => hashtagExp.test(hashtag));
   }
   return true;
 };
 
 const validateHashtagByDuplicates = (value) => {
   if (value) {
-    value = normalizeHashtagValue();
-    const hashtagsArray = value.split(' ');
-    return (!hasDuplicates(hashtagsArray));
+    const hashtagsArray = normalizeHashtagValue(value);
+    return new Set(hashtagsArray).size === hashtagsArray.length;
   }
   return true;
 };
 
 const validateHashtagByAmount = (value) => {
-  value = normalizeHashtagValue();
   if (value) {
-    const hashtagsArray = value.split(' ');
+    const hashtagsArray = normalizeHashtagValue(value);
     return !(hashtagsArray.length > 5);
   }
   return true;

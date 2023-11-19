@@ -14,14 +14,15 @@ const sliderContainer = editPictureForm.querySelector('.img-upload__effect-level
 const effectLevelValue = editPictureForm.querySelector('.effect-level__value');
 const effectsList = editPictureForm.querySelector('.effects__list');
 
-let scale = 100;
+const DEFAULT_SCALE_VALUE = 100;
+let scale = DEFAULT_SCALE_VALUE;
 
 const applyPictureScaleValue = (value) => {
   uploadPicturePreview.style.transform = `scale(${value / 100})`;
 };
 
 const increaseScaleValue = () => {
-  if (scale >= 100) {
+  if (scale >= DEFAULT_SCALE_VALUE) {
     return;
   } else {
     scale += 25;
@@ -154,7 +155,7 @@ const openEditPictureForm = () => {
     document.body.classList.add('modal-open');
 
     document.addEventListener('keydown', onDocumentKeydown);
-    scale = 100;
+    scale = DEFAULT_SCALE_VALUE;
   });
 };
 
