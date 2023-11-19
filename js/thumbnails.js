@@ -1,7 +1,5 @@
-import { photoDescriptionCollection } from './photo-description.js';
+import { setContainerClickHandler } from './big-picture.js';
 
-
-const pictures = photoDescriptionCollection();
 const thumbnailTemplate = document.querySelector('#picture')
   .content
   .querySelector('.picture');
@@ -26,11 +24,8 @@ const renderThumbnails = (picturesArray) => {
     const thumbnail = createThumbnail(picture);
     thumbnailFragment.append(thumbnail);
   });
-
+  setContainerClickHandler(picturesArray);
   container.append(thumbnailFragment);
 };
 
-
-renderThumbnails(pictures);
-
-export { renderThumbnails, container, pictures };
+export { renderThumbnails, container };

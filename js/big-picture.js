@@ -1,4 +1,4 @@
-import { pictures, container } from './thumbnails.js';
+import { container } from './thumbnails.js';
 import { isEscapeKey } from './utils.js';
 
 const pictureModalElement = document.querySelector('.big-picture');
@@ -68,23 +68,31 @@ const renderBigPicture = ({ url, likes, description, comments }) => {
   captionElement.textContent = description;
 };
 
-const openPictureModalElement = (evt) => {
+const openPictureModalElement = () => {
   pictureModalElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
-
   document.addEventListener('keydown', onDocumentKeydown);
+};
 
-  const thumbnail = evt.target.closest('[data-thumbnail-id]');
-  if (!thumbnail) {
-    return;
-  }
-  evt.preventDefault();
-  const thumbnailId = parseInt(thumbnail.dataset.thumbnailId, 10);
-  const thumbnailData = pictures.find(({ id }) => id === thumbnailId);
-  const thumbnailCommentsArray = thumbnailData.comments;
+const setContainerClickHandler = (pictures) => {
+  container.addEventListener('click', (evt) => {
+    if (evt.target.className === 'picture__img') {
+      openPictureModalElement(evt);
+    }
 
-  renderBigPicture(thumbnailData);
-  renderComments(thumbnailCommentsArray);
+    const thumbnail = evt.target.closest('[data-thumbnail-id]');
+    if (!thumbnail) {
+      return;
+    }
+    evt.preventDefault();
+
+    const thumbnailId = parseInt(thumbnail.dataset.thumbnailId, 10);
+    const thumbnailData = pictures.find(({ id }) => id === thumbnailId);
+    const thumbnailCommentsArray = thumbnailData.comments;
+
+    renderBigPicture(thumbnailData);
+    renderComments(thumbnailCommentsArray);
+  });
 };
 
 const closeBigPicture = () => {
@@ -99,10 +107,8 @@ function onDocumentKeydown(evt) {
   }
 }
 
-container.addEventListener('click', (evt) => {
-  if (evt.target.className === 'picture__img') {
-    openPictureModalElement(evt);
-  }
-});
-
 closeBigPictureButton.addEventListener('click', closeBigPicture);
+
+export { setContainerClickHandler };
+
+
