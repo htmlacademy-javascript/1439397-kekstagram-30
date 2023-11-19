@@ -1,3 +1,5 @@
+const ALERT_SHOW_TIME = 5000;
+
 const getRandomInteger = (a, b) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -35,17 +37,38 @@ const makeIdCounter = () => {
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-// ошибка при загрузке данных миниаютюр
-const dataErrorTemplate = document.querySelector('#data-error')
-  .content
-  .querySelector('.data-error');
+const ERROR_ELEMENTS = {
+  LOAD_DATA_ERROR_ELEMENT: 'data-error',
+  SEND_DATA_ERROR_ELEMENT: 'error',
+  SUCCESSFUL_SENDING: 'success',
+};
 
-const showError = () => {
-  document.body.append(dataErrorTemplate);
+const showError = (element) => {
+  const dataErrorTemplate = document.querySelector(`#${element}`).content.cloneNode(true);
+  const dataErrorElement = dataErrorTemplate.querySelector(`.${element}`);
+  document.body.append(dataErrorElement);
 
-  setTimeout(() => {
-    dataErrorTemplate.remove()
-  }, 5000);
-}
+  if (element === ERROR_ELEMENTS.LOAD_DATA_ERROR_ELEMENT) {
+    setTimeout(() => {
+      dataErrorElement.remove();
+    }, ALERT_SHOW_TIME);
+  } else {
+    const button = dataErrorElement.querySelector('[class*="button"]');
 
-export { getRandomInteger, getRandomArrayElement, createRandomNumberFromRange, makeIdCounter, isEscapeKey, showError };
+    button.addEventListener('click', () => dataErrorElement.remove());
+
+    document.addEventListener('keydown', (evt) => {
+      if (isEscapeKey(evt)) {
+        dataErrorElement.remove();
+      }
+    });
+
+    document.addEventListener('click', (evt) => {
+      if (!(evt.target.className !== dataErrorElement.className)) {
+        dataErrorElement.remove();
+      }
+    });
+  }
+};
+
+export { getRandomInteger, getRandomArrayElement, createRandomNumberFromRange, makeIdCounter, isEscapeKey, showError, ERROR_ELEMENTS };

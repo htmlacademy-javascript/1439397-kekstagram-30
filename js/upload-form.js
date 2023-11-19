@@ -1,4 +1,6 @@
 import { isEscapeKey } from './utils.js';
+import { pristine } from './pristine.js';
+import { uploadFormElement } from './pristine.js';
 
 const uploadPictureControl = document.querySelector('.img-upload__input');
 const editPictureForm = document.querySelector('.img-upload__overlay');
@@ -40,7 +42,6 @@ const decreaseScaleValue = () => {
 pictureScaleBiggerControl.addEventListener('click', increaseScaleValue);
 pictureScaleSmallerControl.addEventListener('click', decreaseScaleValue);
 
-// Фильтры
 const EFFECTS = [
   {
     name: 'effect-none',
@@ -146,15 +147,16 @@ effectsList.addEventListener('change', (evt) => {
   }
 });
 
-//Открытие модалки
-uploadPictureControl.addEventListener('change', () => {
-  editPictureForm.classList.remove('hidden');
-  sliderContainer.classList.add('hidden');
-  document.body.classList.add('modal-open');
+const openEditPictureForm = () => {
+  uploadPictureControl.addEventListener('change', () => {
+    editPictureForm.classList.remove('hidden');
+    sliderContainer.classList.add('hidden');
+    document.body.classList.add('modal-open');
 
-  document.addEventListener('keydown', onDocumentKeydown);
-  scale = 100;
-});
+    document.addEventListener('keydown', onDocumentKeydown);
+    scale = 100;
+  });
+};
 
 const closeEditPictureForm = () => {
   editPictureForm.classList.add('hidden');
@@ -163,14 +165,19 @@ const closeEditPictureForm = () => {
   uploadPictureControl.value = '';
   uploadPicturePreview.removeAttribute('style');
   pictureScaleControl.setAttribute('value', '100%');
+  pristine.reset();
+  uploadFormElement.reset();
 };
 
 function onDocumentKeydown(evt) {
-  if (isEscapeKey(evt)) {
+  if (isEscapeKey(evt) && !document.querySelector('.error')) {
     evt.preventDefault();
     closeEditPictureForm();
   }
 }
 
+openEditPictureForm();
+
 closeEditPictureFormButton.addEventListener('click', closeEditPictureForm);
 
+export { closeEditPictureForm };

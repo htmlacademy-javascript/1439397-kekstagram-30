@@ -1,3 +1,5 @@
+import { setContainerClickHandler } from './big-picture.js';
+
 const thumbnailTemplate = document.querySelector('#picture')
   .content
   .querySelector('.picture');
@@ -22,9 +24,8 @@ const renderThumbnails = (picturesArray) => {
     const thumbnail = createThumbnail(picture);
     thumbnailFragment.append(thumbnail);
   });
-
+  setContainerClickHandler(picturesArray);
   container.append(thumbnailFragment);
 };
-
 
 export { renderThumbnails, container };
