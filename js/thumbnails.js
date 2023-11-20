@@ -1,4 +1,6 @@
 import { setContainerClickHandler } from './big-picture.js';
+// import { compareCommentsAmount } from './filters.js'
+const filterElement = document.querySelector('.img-filters');
 
 const thumbnailTemplate = document.querySelector('#picture')
   .content
@@ -25,7 +27,12 @@ const renderThumbnails = (picturesArray) => {
     thumbnailFragment.append(thumbnail);
   });
   setContainerClickHandler(picturesArray);
+  const thumbnailsArray = document.querySelectorAll('.picture');
+  for (const thumbnail of thumbnailsArray) {
+    thumbnail.remove();
+  }
   container.append(thumbnailFragment);
+  filterElement.classList.remove('img-filters--inactive');
 };
 
 export { renderThumbnails, container };
