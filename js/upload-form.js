@@ -181,4 +181,4 @@ openEditPictureForm();
 
 closeEditPictureFormButton.addEventListener('click', closeEditPictureForm);
 
-export { closeEditPictureForm };
+export { closeEditPictureForm, uploadPicturePreview };

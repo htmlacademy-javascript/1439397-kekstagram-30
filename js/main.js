@@ -5,6 +5,7 @@ import { setUserFormSubmit } from './pristine.js';
 import './upload-form.js';
 import { closeEditPictureForm } from './upload-form.js';
 import { initFilters } from './filters.js';
+import './upload-photo.js';
 
 getData()
   .then((pictures) => {
