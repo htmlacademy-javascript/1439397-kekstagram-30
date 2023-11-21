@@ -1,5 +1,4 @@
 import { setContainerClickHandler } from './big-picture.js';
-// import { compareCommentsAmount } from './filters.js'
 const filterElement = document.querySelector('.img-filters');
 
 const thumbnailTemplate = document.querySelector('#picture')

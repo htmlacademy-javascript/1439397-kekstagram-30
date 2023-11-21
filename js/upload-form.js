@@ -130,7 +130,18 @@ const createEffect = (obj) => {
   }
 
   sliderElement.noUiSlider.on('update', () => {
-    effectLevelValue.setAttribute('value', sliderElement.noUiSlider.get());
+    let sliderValue = sliderElement.noUiSlider.get();
+
+    if (filterName === 'effect-marvin') {
+      sliderValue = parseInt(sliderValue, 10).toFixed();
+    } else {
+      sliderValue = parseFloat(sliderValue).toFixed(1);
+    }
+
+    if (sliderValue.endsWith('.0')) {
+      sliderValue = Math.trunc(sliderValue);
+    }
+    effectLevelValue.setAttribute('value', sliderValue);
     uploadPicturePreview.style.filter = `${filterName}(${sliderElement.noUiSlider.get()}${postfix})`;
   });
 };

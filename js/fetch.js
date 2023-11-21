@@ -1,6 +1,6 @@
 const URLS = {
   GET_DATA: 'https://30.javascript.pages.academy/kekstagram/data',
-  SEND_DATA: 'https://30.javascript.pages.academy/kekstagram',
+  SEND_DATA: 'https://30.javascript.pages.academy/kekstagram/',
 };
 
 const METHOD = {
