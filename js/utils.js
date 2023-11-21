@@ -80,5 +80,4 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
-
 export { getRandomInteger, getRandomArrayElement, createRandomNumberFromRange, makeIdCounter, isEscapeKey, showError, ERROR_ELEMENTS, debounce, RERENDER_DELAY };

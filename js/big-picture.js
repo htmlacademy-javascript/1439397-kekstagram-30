@@ -22,43 +22,28 @@ const createComment = ({ avatar, name, message }) => {
   return comment;
 };
 
+const showComments = () => {
+  const commentsArray = Array.from(commentsContainer.children);
+  commentsArray.filter((comment) => comment.classList.contains('hidden')).slice(0, 5).forEach((comment) => comment.classList.remove('hidden'));
+  commentShownElement.textContent = Array.from(commentsContainer.children).filter((comment) => !comment.classList.contains('hidden')).length;
+  if (commentShownElement.textContent === commentTotalElement.textContent) {
+    commentsLoaderButton.classList.add('hidden');
+  }
+};
+
 const renderComments = (commentsArray) => {
   commentsContainer.innerHTML = '';
-  const COMMENTS_COUNT_SHOWN = 5;
-  let startCommentIndex = 0;
-  let endCommentIndex = COMMENTS_COUNT_SHOWN;
-
-  const renderFixNumberComments = () => {
-    commentsLoaderButton.classList.remove('hidden');
-
-    const numberOfCommentsShown = commentsContainer.children.length;
-    const isCommentsContainerEmpty = !numberOfCommentsShown;
-    commentsLoaderButton.removeEventListener('click', renderFixNumberComments);
-
-    if (!isCommentsContainerEmpty) {
-      startCommentIndex += COMMENTS_COUNT_SHOWN;
-      endCommentIndex += COMMENTS_COUNT_SHOWN;
-    }
-    commentShownElement.textContent += numberOfCommentsShown;
-
-    const commentFragment = document.createDocumentFragment();
-    const fixNumberCommentsArray = commentsArray.slice(startCommentIndex, endCommentIndex);
-    fixNumberCommentsArray.forEach((commentItem) => {
-      const comment = createComment(commentItem);
-      commentFragment.append(comment);
-    });
-    commentsContainer.append(commentFragment);
-    commentShownElement.textContent = commentsContainer.children.length;
-
-    if (commentsContainer.children.length === commentsArray.length) {
-      commentsLoaderButton.classList.add('hidden');
-      return;
-    }
-
-    commentsLoaderButton.addEventListener('click', renderFixNumberComments);
-  };
-  renderFixNumberComments();
+  const commentFragment = document.createDocumentFragment();
+  for (let i = 0; i < commentsArray.length; i++) {
+    const comment = createComment(commentsArray[i]);
+    commentFragment.append(comment);
+    comment.classList.add('hidden');
+  }
+  commentsContainer.append(commentFragment);
+  showComments();
 };
+
+commentsLoaderButton.addEventListener('click', showComments);
 
 const renderBigPicture = ({ url, likes, description, comments }) => {
   bigPictureElement.src = url;
@@ -72,6 +57,7 @@ const openPictureModalElement = () => {
   pictureModalElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
+  commentsLoaderButton.classList.remove('hidden');
 };
 
 const setContainerClickHandler = (pictures) => {

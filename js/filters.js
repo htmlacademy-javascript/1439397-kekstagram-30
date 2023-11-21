@@ -13,14 +13,17 @@ const compareCommentsAmount = (thumbnailA, thumbnailB) => getThumbnailCommentsLe
 
 const createDebouncedThumbnails = debounce(renderThumbnails, RERENDER_DELAY);
 
+const setActiveButtonClass = (evt) => {
+  const buttons = filterForm.querySelectorAll('.img-filters__button');
+  buttons.forEach((button) => {
+    button.classList.toggle('img-filters__button--active', button === evt.target);
+  });
+};
+
 const initFilters = (pictures) => {
   const instanceOfPictures = pictures.slice();
 
   filterForm.addEventListener('click', (evt) => {
-    const buttons = filterForm.querySelectorAll('.img-filters__button');
-    buttons.forEach((button) => {
-      button.classList.toggle('img-filters__button--active', button === evt.target);
-    });
     switch (evt.target) {
       case discussedFilterButton:
         createDebouncedThumbnails(instanceOfPictures.sort(compareCommentsAmount));
@@ -32,6 +35,7 @@ const initFilters = (pictures) => {
         createDebouncedThumbnails(pictures);
         break;
     }
+    setActiveButtonClass(evt);
   });
 };
 
