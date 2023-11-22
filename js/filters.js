@@ -1,17 +1,18 @@
 import { renderThumbnails } from './thumbnails.js';
-import { debounce, RERENDER_DELAY } from './utils.js';
+import { applyDebounce, RERENDER_DELAY } from './utils.js';
+
+const RANDOM_ELEMENTS_COUNT = 10;
 
 const filtersNode = document.querySelector('.img-filters__form');
 const defaultFilterButton = filtersNode.querySelector('#filter-default');
 const randomtFilterButton = filtersNode.querySelector('#filter-random');
 const discussedFilterButton = filtersNode.querySelector('#filter-discussed');
-const RANDOM_ELEMENTS_COUNT = 10;
 
-const getRandomThumbnailsArray = (arr) => arr.sort(() => 0.5 - Math.random()).slice(0, RANDOM_ELEMENTS_COUNT);
+const getRandomThumbnailsArray = (thumbnails) => thumbnails.sort(() => 0.5 - Math.random()).slice(0, RANDOM_ELEMENTS_COUNT);
 const getThumbnailCommentsLength = (thumbnail) => thumbnail.comments.length;
 const compareCommentsAmount = (thumbnailA, thumbnailB) => getThumbnailCommentsLength(thumbnailB) - getThumbnailCommentsLength(thumbnailA);
 
-const createDebouncedThumbnails = debounce(renderThumbnails, RERENDER_DELAY);
+const createDebouncedThumbnails = applyDebounce(renderThumbnails, RERENDER_DELAY);
 
 const setActiveButtonClass = (evt) => {
   const buttons = filtersNode.querySelectorAll('.img-filters__button');
@@ -20,7 +21,7 @@ const setActiveButtonClass = (evt) => {
   });
 };
 
-const initFilters = (pictures) => {
+const initializeFilters = (pictures) => {
   const instanceOfPictures = pictures.slice();
 
   filtersNode.addEventListener('click', (evt) => {
@@ -39,4 +40,4 @@ const initFilters = (pictures) => {
   });
 };
 
-export { initFilters };
+export { initializeFilters };

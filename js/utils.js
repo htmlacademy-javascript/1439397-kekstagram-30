@@ -90,30 +90,30 @@ const showError = (element) => {
   } else {
     const errorButtonNode = dataErrorNode.querySelector('[class*="button"]');
 
-    const onDocumentKeydown = (evt) => {
+    const pressKey = (evt) => {
       if (isEscapeKey(evt)) {
         dataErrorNode.remove();
-        document.removeEventListener('keydown', onDocumentKeydown);
+        document.removeEventListener('keydown', pressKey);
       }
     };
 
     errorButtonNode.addEventListener('click', () => {
       dataErrorNode.remove();
-      document.removeEventListener('keydown', onDocumentKeydown);
+      document.removeEventListener('keydown', pressKey);
     });
 
-    document.addEventListener('keydown', onDocumentKeydown);
+    document.addEventListener('keydown', pressKey);
 
     dataErrorNode.addEventListener('click', (evt) => {
       if (!(evt.target.className !== dataErrorNode.className)) {
         dataErrorNode.remove();
-        document.removeEventListener('keydown', onDocumentKeydown);
+        document.removeEventListener('keydown', pressKey);
       }
     });
   }
 };
 
-const debounce = (callback, timeoutDelay) => {
+const applyDebounce = (callback, timeoutDelay) => {
   let timeoutId;
   return (...rest) => {
     clearTimeout(timeoutId);
@@ -121,4 +121,4 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
-export { isEscapeKey, showError, errorElement, debounce, effects, RERENDER_DELAY };
+export { isEscapeKey, showError, errorElement, applyDebounce, effects, RERENDER_DELAY };
