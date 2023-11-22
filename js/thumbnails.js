@@ -1,11 +1,10 @@
 import { setContainerClickHandler } from './big-picture.js';
-const filterElement = document.querySelector('.img-filters');
 
+const filterNode = document.querySelector('.img-filters');
 const thumbnailTemplate = document.querySelector('#picture')
   .content
   .querySelector('.picture');
-
-const container = document.querySelector('.pictures');
+const thumbnailsContainerNode = document.querySelector('.pictures');
 
 const createThumbnail = ({ id, url, description, likes, comments }) => {
   const thumbnail = thumbnailTemplate.cloneNode(true);
@@ -18,20 +17,20 @@ const createThumbnail = ({ id, url, description, likes, comments }) => {
   return thumbnail;
 };
 
-const renderThumbnails = (picturesArray) => {
+const renderThumbnails = (pictures) => {
   const thumbnailFragment = document.createDocumentFragment();
 
-  picturesArray.forEach((picture) => {
+  pictures.forEach((picture) => {
     const thumbnail = createThumbnail(picture);
     thumbnailFragment.append(thumbnail);
   });
-  setContainerClickHandler(picturesArray);
-  const thumbnailsArray = document.querySelectorAll('.picture');
-  for (const thumbnail of thumbnailsArray) {
+  setContainerClickHandler(pictures);
+  const thumbnails = document.querySelectorAll('.picture');
+  for (const thumbnail of thumbnails) {
     thumbnail.remove();
   }
-  container.append(thumbnailFragment);
-  filterElement.classList.remove('img-filters--inactive');
+  thumbnailsContainerNode.append(thumbnailFragment);
+  filterNode.classList.remove('img-filters--inactive');
 };
 
-export { renderThumbnails, container };
+export { renderThumbnails, thumbnailsContainerNode };

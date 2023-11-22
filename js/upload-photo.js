@@ -1,18 +1,17 @@
-import { uploadPicturePreview } from './upload-form.js';
+const effectPreviewNodes = document.querySelectorAll('.effects__preview');
+const FileTypes = ['jpg', 'jpeg', 'png'];
 
-const fileChooser = document.querySelector('.img-upload__input');
-const effectPreviews = document.querySelectorAll('.effects__preview');
-const FILE_TYPES = ['jpg', 'jpeg', 'png'];
-
-fileChooser.addEventListener('change', () => {
-  const file = fileChooser.files[0];
+const chooseFile = (inputFileNode, picturePreviewNode) => {
+  const file = inputFileNode.files[0];
   const fileName = file.name.toLowerCase();
-  const matches = FILE_TYPES.some((type) => fileName.endsWith(type));
+  const matches = FileTypes.some((type) => fileName.endsWith(type));
 
   if (matches) {
-    uploadPicturePreview.src = URL.createObjectURL(file);
-    effectPreviews.forEach((effect) => {
-      effect.style.backgroundImage = `url('${uploadPicturePreview.src}')`;
+    picturePreviewNode.src = URL.createObjectURL(file);
+    effectPreviewNodes.forEach((effect) => {
+      effect.style.backgroundImage = `url('${picturePreviewNode.src}')`;
     });
   }
-});
+};
+
+export { chooseFile };
