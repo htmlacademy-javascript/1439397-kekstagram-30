@@ -2,6 +2,19 @@ import { isEscapeKey, effects } from './utils.js';
 import { pristine, uploadFormNode } from './pristine.js';
 import { chooseFile } from './upload-photo.js';
 
+const DEFAULT_SCALE_VALUE = 100;
+const DEFAULT_SCALE_STEP = 25;
+
+const sliderDefaultOptions = {
+  range: {
+    min: 0,
+    max: 1,
+  },
+  start: 1,
+  step: 0.1,
+  connect: 'lower',
+};
+
 const pictureControlNode = document.querySelector('.img-upload__input');
 const editPictureFormNode = document.querySelector('.img-upload__overlay');
 const picturePreviewNode = editPictureFormNode.querySelector('.img-upload__preview img');
@@ -14,19 +27,7 @@ const scaleSmallerButton = editPictureFormNode.querySelector('.scale__control--s
 const scaleBiggerButton = editPictureFormNode.querySelector('.scale__control--bigger');
 const closeEditPictureFormButton = editPictureFormNode.querySelector('.img-upload__cancel');
 
-const DEFAULT_SCALE_VALUE = 100;
-const DEFAULT_SCALE_STEP = 25;
 let scale = DEFAULT_SCALE_VALUE;
-
-const sliderDefaultOptions = {
-  range: {
-    min: 0,
-    max: 1,
-  },
-  start: 1,
-  step: 0.1,
-  connect: 'lower',
-};
 
 const applyPictureScaleValue = (value) => {
   picturePreviewNode.style.transform = `scale(${value / DEFAULT_SCALE_VALUE})`;
@@ -52,9 +53,9 @@ scaleSmallerButton.addEventListener('click', decreaseScaleValue);
 
 noUiSlider.create(sliderNode, sliderDefaultOptions);
 
-const createEffect = (obj) => {
-  const filterName = obj.filterName;
-  let postfix = obj?.postfix;
+const createEffect = (effect) => {
+  const filterName = effect.filterName;
+  let postfix = effect?.postfix;
   if (!postfix) {
     postfix = '';
   }
@@ -96,7 +97,7 @@ const openEditPictureForm = () => {
     document.body.classList.add('modal-open');
     chooseFile(pictureControlNode, picturePreviewNode);
 
-    document.addEventListener('keydown', onDocumentKeydown);
+    document.addEventListener('keydown', pressKey);
     scale = DEFAULT_SCALE_VALUE;
   });
 };
@@ -112,7 +113,7 @@ const closeEditPictureForm = () => {
   uploadFormNode.reset();
 };
 
-function onDocumentKeydown(evt) {
+function pressKey(evt) {
   if (isEscapeKey(evt) && !document.querySelector('.error')) {
     evt.preventDefault();
     closeEditPictureForm();

@@ -1,6 +1,8 @@
 import { thumbnailsContainerNode } from './thumbnails.js';
 import { isEscapeKey } from './utils.js';
 
+const DEFAULT_COMMENTS_COUNT = 5;
+
 const pictureModalNode = document.querySelector('.big-picture');
 const bigPictureNode = pictureModalNode.querySelector('.big-picture__img img');
 const likesCountNode = pictureModalNode.querySelector('.likes-count');
@@ -11,8 +13,6 @@ const commentNode = commentsContainerNode.querySelector('.social__comment');
 const captionNode = pictureModalNode.querySelector('.social__caption');
 const closeBigPictureButton = pictureModalNode.querySelector('.big-picture__cancel');
 const commentsLoaderButton = pictureModalNode.querySelector('.comments-loader');
-
-const DEFAULT_COMMENTS_COUNT = 5;
 
 const createComment = ({ avatar, name, message }) => {
   const comment = commentNode.cloneNode(true);
@@ -58,7 +58,7 @@ const renderBigPicture = ({ url, likes, description, comments }) => {
 const openPictureModalElement = () => {
   pictureModalNode.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  document.addEventListener('keydown', onDocumentKeydown);
+  document.addEventListener('keydown', pressKey);
   commentsLoaderButton.classList.remove('hidden');
 };
 
@@ -88,7 +88,7 @@ const closeBigPicture = () => {
   document.body.classList.remove('modal-open');
 };
 
-function onDocumentKeydown(evt) {
+function pressKey(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     closeBigPicture();

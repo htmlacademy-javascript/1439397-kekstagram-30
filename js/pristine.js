@@ -1,12 +1,6 @@
 import { sendData } from './fetch.js';
 import { isEscapeKey, showError, errorElement } from './utils.js';
 
-const uploadFormNode = document.querySelector('.img-upload__form');
-const userInputContainerNode = uploadFormNode.querySelector('.img-upload__text');
-const hashtagInputNode = uploadFormNode.querySelector('.text__hashtags');
-const commentInputNode = uploadFormNode.querySelector('.text__description');
-const publishButton = uploadFormNode.querySelector('.img-upload__submit');
-
 const HASHTAG_EXPRESSION = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_COMMENT_LENGTH = 140;
 const MAX_HASHTAGS_COUNT = 5;
@@ -17,6 +11,13 @@ const errorMessage = {
   hashtagAmountExceeded: 'Превышено количество хэш-тегов',
   commentLengthExceeded: 'Длина комментария больше 140 символов',
 };
+
+const uploadFormNode = document.querySelector('.img-upload__form');
+const userInputContainerNode = uploadFormNode.querySelector('.img-upload__text');
+const hashtagInputNode = uploadFormNode.querySelector('.text__hashtags');
+const commentInputNode = uploadFormNode.querySelector('.text__description');
+const publishButton = uploadFormNode.querySelector('.img-upload__submit');
+
 
 userInputContainerNode.addEventListener('keydown', (evt) => {
   if ((evt.target === hashtagInputNode || evt.target === commentInputNode) && isEscapeKey) {

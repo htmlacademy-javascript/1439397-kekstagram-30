@@ -1,5 +1,5 @@
-const effectPreviewNodes = document.querySelectorAll('.effects__preview');
 const FileTypes = ['jpg', 'jpeg', 'png'];
+const effectPreviewNodes = document.querySelectorAll('.effects__preview');
 
 const chooseFile = (inputFileNode, picturePreviewNode) => {
   const file = inputFileNode.files[0];
