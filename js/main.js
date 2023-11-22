@@ -1,10 +1,10 @@
 import { setUserFormSubmit } from './pristine.js';
 import { closeEditPictureForm } from './upload-form.js';
-import './upload-photo.js';
 import { getData } from './fetch.js';
 import { renderThumbnails } from './thumbnails.js';
-import { showError, ERROR_ELEMENTS } from './utils.js';
+import { showError, errorElement } from './utils.js';
 import { initFilters } from './filters.js';
+import './upload-photo.js';
 
 setUserFormSubmit(closeEditPictureForm);
 
@@ -13,4 +13,4 @@ getData()
     renderThumbnails(pictures);
     initFilters(pictures);
   })
-  .catch(() => showError(ERROR_ELEMENTS.LOAD_DATA_ERROR_ELEMENT));
+  .catch(() => showError(errorElement.loadData));

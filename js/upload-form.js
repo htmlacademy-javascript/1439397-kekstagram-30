@@ -1,118 +1,24 @@
-import { isEscapeKey } from './utils.js';
-import { pristine } from './pristine.js';
-import { uploadFormElement } from './pristine.js';
+import { isEscapeKey, effects } from './utils.js';
+import { pristine, uploadFormNode } from './pristine.js';
+import { chooseFile } from './upload-photo.js';
 
-const uploadPictureControl = document.querySelector('.img-upload__input');
-const editPictureForm = document.querySelector('.img-upload__overlay');
-const closeEditPictureFormButton = editPictureForm.querySelector('.img-upload__cancel');
-const pictureScaleControl = editPictureForm.querySelector('.scale__control--value');
-const pictureScaleSmallerControl = editPictureForm.querySelector('.scale__control--smaller');
-const pictureScaleBiggerControl = editPictureForm.querySelector('.scale__control--bigger');
-const uploadPicturePreview = editPictureForm.querySelector('.img-upload__preview img');
-const sliderElement = editPictureForm.querySelector('.effect-level__slider');
-const sliderContainer = editPictureForm.querySelector('.img-upload__effect-level');
-const effectLevelValue = editPictureForm.querySelector('.effect-level__value');
-const effectsList = editPictureForm.querySelector('.effects__list');
+const pictureControlNode = document.querySelector('.img-upload__input');
+const editPictureFormNode = document.querySelector('.img-upload__overlay');
+const picturePreviewNode = editPictureFormNode.querySelector('.img-upload__preview img');
+const sliderNode = editPictureFormNode.querySelector('.effect-level__slider');
+const sliderContainerNode = editPictureFormNode.querySelector('.img-upload__effect-level');
+const effectLevelValueNode = editPictureFormNode.querySelector('.effect-level__value');
+const effectsListNode = editPictureFormNode.querySelector('.effects__list');
+const scaleControlNode = editPictureFormNode.querySelector('.scale__control--value');
+const scaleSmallerButton = editPictureFormNode.querySelector('.scale__control--smaller');
+const scaleBiggerButton = editPictureFormNode.querySelector('.scale__control--bigger');
+const closeEditPictureFormButton = editPictureFormNode.querySelector('.img-upload__cancel');
 
 const DEFAULT_SCALE_VALUE = 100;
+const DEFAULT_SCALE_STEP = 25;
 let scale = DEFAULT_SCALE_VALUE;
 
-const applyPictureScaleValue = (value) => {
-  uploadPicturePreview.style.transform = `scale(${value / 100})`;
-};
-
-const increaseScaleValue = () => {
-  if (scale >= DEFAULT_SCALE_VALUE) {
-    return;
-  } else {
-    scale += 25;
-  }
-  pictureScaleControl.setAttribute('value', `${scale}%`);
-  applyPictureScaleValue(scale);
-};
-const decreaseScaleValue = () => {
-  if (scale <= 25) {
-    return;
-  } else {
-    scale -= 25;
-  }
-  pictureScaleControl.setAttribute('value', `${scale}%`);
-  applyPictureScaleValue(scale);
-};
-
-pictureScaleBiggerControl.addEventListener('click', increaseScaleValue);
-pictureScaleSmallerControl.addEventListener('click', decreaseScaleValue);
-
-const EFFECTS = [
-  {
-    name: 'effect-none',
-    filterName: 'none',
-  },
-  {
-    name: 'effect-chrome',
-    options: {
-      range: {
-        min: 0,
-        max: 1,
-      },
-      start: 1,
-      step: 0.1,
-    },
-    filterName: 'grayscale',
-  },
-  {
-    name: 'effect-sepia',
-    options: {
-      range: {
-        min: 0,
-        max: 1,
-      },
-      start: 1,
-      step: 0.1,
-    },
-    filterName: 'sepia',
-  },
-  {
-    name: 'effect-marvin',
-    options: {
-      range: {
-        min: 0,
-        max: 100,
-      },
-      start: 100,
-      step: 1,
-    },
-    postfix: '%',
-    filterName: 'invert',
-  },
-  {
-    name: 'effect-phobos',
-    options: {
-      range: {
-        min: 0,
-        max: 3,
-      },
-      start: 3,
-      step: 0.1,
-    },
-    postfix: 'px',
-    filterName: 'blur',
-  },
-  {
-    name: 'effect-heat',
-    options: {
-      range: {
-        min: 0,
-        max: 3,
-      },
-      start: 3,
-      step: 0.1,
-    },
-    filterName: 'brightness',
-  },
-];
-
-noUiSlider.create(sliderElement, {
+const sliderDefaultOptions = {
   range: {
     min: 0,
     max: 1,
@@ -120,17 +26,41 @@ noUiSlider.create(sliderElement, {
   start: 1,
   step: 0.1,
   connect: 'lower',
-});
+};
+
+const applyPictureScaleValue = (value) => {
+  picturePreviewNode.style.transform = `scale(${value / DEFAULT_SCALE_VALUE})`;
+};
+
+const increaseScaleValue = () => {
+  if (!(scale === DEFAULT_SCALE_VALUE)) {
+    scale += DEFAULT_SCALE_STEP;
+  }
+  scaleControlNode.setAttribute('value', `${scale}%`);
+  applyPictureScaleValue(scale);
+};
+const decreaseScaleValue = () => {
+  if (!(scale === DEFAULT_SCALE_STEP)) {
+    scale -= DEFAULT_SCALE_STEP;
+  }
+  scaleControlNode.setAttribute('value', `${scale}%`);
+  applyPictureScaleValue(scale);
+};
+
+scaleBiggerButton.addEventListener('click', increaseScaleValue);
+scaleSmallerButton.addEventListener('click', decreaseScaleValue);
+
+noUiSlider.create(sliderNode, sliderDefaultOptions);
 
 const createEffect = (obj) => {
   const filterName = obj.filterName;
   let postfix = obj?.postfix;
-  if (postfix === undefined) {
+  if (!postfix) {
     postfix = '';
   }
 
-  sliderElement.noUiSlider.on('update', () => {
-    let sliderValue = sliderElement.noUiSlider.get();
+  sliderNode.noUiSlider.on('update', () => {
+    let sliderValue = sliderNode.noUiSlider.get();
 
     if (filterName === 'effect-marvin') {
       sliderValue = parseInt(sliderValue, 10).toFixed();
@@ -141,29 +71,30 @@ const createEffect = (obj) => {
     if (sliderValue.endsWith('.0')) {
       sliderValue = Math.trunc(sliderValue);
     }
-    effectLevelValue.setAttribute('value', sliderValue);
-    uploadPicturePreview.style.filter = `${filterName}(${sliderElement.noUiSlider.get()}${postfix})`;
+    effectLevelValueNode.setAttribute('value', sliderValue);
+    picturePreviewNode.style.filter = `${filterName}(${sliderNode.noUiSlider.get()}${postfix})`;
   });
 };
 
-effectsList.addEventListener('change', (evt) => {
-  const effectItem = EFFECTS.find((item) => item.name === evt.target.id);
+effectsListNode.addEventListener('change', (evt) => {
+  const effectItem = effects.find((item) => item.name === evt.target.id);
   if (effectItem.filterName !== 'none') {
-    sliderContainer.classList.remove('hidden');
-    sliderElement.noUiSlider.updateOptions(effectItem.options);
+    sliderContainerNode.classList.remove('hidden');
+    sliderNode.noUiSlider.updateOptions(effectItem.options);
     createEffect(effectItem);
   } else {
-    uploadPicturePreview.style.filter = null;
-    effectLevelValue.setAttribute('value', '');
-    sliderContainer.classList.add('hidden');
+    picturePreviewNode.style.filter = null;
+    effectLevelValueNode.setAttribute('value', '');
+    sliderContainerNode.classList.add('hidden');
   }
 });
 
 const openEditPictureForm = () => {
-  uploadPictureControl.addEventListener('change', () => {
-    editPictureForm.classList.remove('hidden');
-    sliderContainer.classList.add('hidden');
+  pictureControlNode.addEventListener('change', () => {
+    editPictureFormNode.classList.remove('hidden');
+    sliderContainerNode.classList.add('hidden');
     document.body.classList.add('modal-open');
+    chooseFile(pictureControlNode, picturePreviewNode);
 
     document.addEventListener('keydown', onDocumentKeydown);
     scale = DEFAULT_SCALE_VALUE;
@@ -171,14 +102,14 @@ const openEditPictureForm = () => {
 };
 
 const closeEditPictureForm = () => {
-  editPictureForm.classList.add('hidden');
+  editPictureFormNode.classList.add('hidden');
   document.body.classList.remove('modal-open');
 
-  uploadPictureControl.value = '';
-  uploadPicturePreview.removeAttribute('style');
-  pictureScaleControl.setAttribute('value', '100%');
+  pictureControlNode.value = '';
+  picturePreviewNode.removeAttribute('style');
+  scaleControlNode.setAttribute('value', '100%');
   pristine.reset();
-  uploadFormElement.reset();
+  uploadFormNode.reset();
 };
 
 function onDocumentKeydown(evt) {
@@ -192,4 +123,4 @@ openEditPictureForm();
 
 closeEditPictureFormButton.addEventListener('click', closeEditPictureForm);
 
-export { closeEditPictureForm, uploadPicturePreview };
+export { closeEditPictureForm };
